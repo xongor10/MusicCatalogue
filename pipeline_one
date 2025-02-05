@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "Building the application..."
+                // Simulate build failure (for testing)
+                sh 'exit 1'  // This will simulate an error during the build
+            }
+        }stage('Test') {
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    echo "Running tests..."
+                    // Simulate test failure (for testing)
+                    sh 'exit 1'  // Simulate a test failure
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    echo "Deploying the application..."
+                    // Simulate deployment failure (for testing)
+                    sh 'exit 1'  // Simulate a deployment failure
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'This will run after all stages, regardless of success or failure.'
+        }
+    }
+}
